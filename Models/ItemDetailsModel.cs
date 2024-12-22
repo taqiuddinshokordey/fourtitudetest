@@ -16,6 +16,5 @@ public class ItemDetails
     [Range(2, 5, ErrorMessage = "Quantity must be greater than 1 and no more than 5.")]
     public int qty { get; set; }
 
-    [Range(0, 5, ErrorMessage = "UnitPrice must not exceed 5.")]
     public long unitprice { get; set; }
 }

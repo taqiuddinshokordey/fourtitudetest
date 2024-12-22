@@ -40,7 +40,7 @@ public class FourtitudeController : Controller
 
         string decodedPassword = _checkPartner.DecodeBase64(request.partnerpassword);
         var isPartnerValid = _checkPartner.IsPartnerValid(request.partnerrefno,request.partnerkey,decodedPassword);
-        var isSignatureValid = _checkPartner.DecodeSignature(request.sig,request);
+        var isSignatureValid = _checkPartner.DecodeSignature(request);    
         if(!isPartnerValid || !isSignatureValid)
         {
             var failedResponse = new FailedApiResponse

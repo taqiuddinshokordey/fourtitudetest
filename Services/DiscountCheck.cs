@@ -31,13 +31,13 @@ namespace FourtitudeTest.Services
 
         private double GetBaseDiscountPercentage(long totalAmount)
         {
-            if (totalAmount < 200)
+            if (totalAmount < 20000)
                 return 0; // No discount
-            if (totalAmount >= 200 && totalAmount <= 500)
+            if (totalAmount >= 20000 && totalAmount <= 50000)
                 return 0.05; // 5% discount
-            if (totalAmount >= 501 && totalAmount <= 800)
+            if (totalAmount >= 50100 && totalAmount <= 80000)
                 return 0.07; // 7% discount
-            if (totalAmount >= 801 && totalAmount <= 1200)
+            if (totalAmount >= 80100 && totalAmount <= 120000)
                 return 0.10; // 10% discount
             return 0.15; // 15% discount for amounts > 1200
         }
@@ -47,13 +47,13 @@ namespace FourtitudeTest.Services
             double conditionalDiscount = 0;
 
             // Prime number condition
-            if (totalAmount > 500 && IsPrime(totalAmount))
+            if (totalAmount > 50000 && IsPrime(totalAmount))
             {
                 conditionalDiscount += 0.08; // Additional 8% discount for prime numbers above 500
             }
 
             // Ends in 5 condition
-            if (totalAmount > 900 && totalAmount % 10 == 5)
+            if (totalAmount > 90000 && totalAmount % 10 == 5)
             {
                 conditionalDiscount += 0.10; // Additional 10% discount for amounts > 900 that end in 5
             }

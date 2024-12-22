@@ -1,7 +1,10 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using fourtitudeTest.Models;
 using FourtitudeTest.Services;
+using Microsoft.Extensions.Primitives;
 
 namespace fourtitudeTest.Services;
 public class CheckRequestValidity
@@ -83,61 +86,63 @@ public class CheckRequestValidity
         return decodedString;
     }
 
-    public bool DecodeSignature(string signature,ApiRequest request)
+    public bool DecodeSignature(ApiRequest rq)
     {
-        try
+        string signatureParameterOrder = GenerateSignatureParameterOrder(rq.timestamp, rq.partnerkey, rq.partnerrefno, rq.totalamount, rq.partnerpassword);
+        string signatureGen = GenerateSHA256(signatureParameterOrder);
+        string encodedSignature = EncodeToBase64(signatureGen);
+
+        if (rq.sig == encodedSignature)    
         {
-            // Decode the Base64 string into a byte array sdas
-            byte[] decodedBytes = Convert.FromBase64String(signature);
+            return true;
+        }
 
-            // Convert the byte array into a string (assuming UTF-8 encoding)
-            string decodedString = System.Text.Encoding.UTF8.GetString(decodedBytes);
-
-            // Step 3: Use a regular expression to split the string into its components
-            // Assuming the string format is 'timestamp + partnerkey + partnerrefno + totalamount + partnerpassword(encoded)'
-            string pattern = @"^(\d{14})([a-zA-Z0-9]{50})([a-zA-Z0-9]{50})(\d+)([a-zA-Z0-9+/=]+)$";
-            Match match = Regex.Match(decodedString, pattern);
-
-            if (match.Success)
-            {
-                // Extract the components
-                string timestamp = match.Groups[1].Value;
-                string partnerKey = match.Groups[2].Value;
-                string partnerRefNo = match.Groups[3].Value;
-                string totalAmount = match.Groups[4].Value;
-                string partnerPasswordEncoded = match.Groups[5].Value;
-
-                // Step 4: Validate timestamp format (yyyyMMddHHmmss)
-                if (!DateTime.TryParseExact(timestamp, "yyyyMMddHHmmss", null, System.Globalization.DateTimeStyles.None, out _))
-                {
-                    
-                    return false;
-                }
-
-                if (partnerKey != request.partnerkey || partnerRefNo != request.partnerrefno || totalAmount != request.totalamount.ToString())
-                {
-                    
-                    return false;
-                }
-
-                string decodedPassword = DecodeBase64(request.partnerpassword); 
-                if (decodedPassword != partnerPasswordEncoded)
-                {
-                    
-                    return false;
-                }
-            
-                return true;
-            }else
-            {
-                return false;
-            }
-        }catch(Exception ex)
-        {
-            return false;
-        }   
-        
+        return false;
       
+    }
+
+    private string GenerateSHA256(string input)
+    {
+        // Compute the SHA-256 hash
+        using (SHA256 sha256 = SHA256.Create())
+        {
+            byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+
+            // Convert hash bytes to a hexadecimal string
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hashBytes)
+            {
+                sb.Append(b.ToString("x2")); // Format as two-digit hexadecimal
+            }
+
+            return sb.ToString();
+        }
+    }
+
+    private string EncodeToBase64(string input)
+    {
+        // Convert the input string to a byte array
+        byte[] inputBytes = Encoding.UTF8.GetBytes(input);
+
+        // Convert the byte array to a Base64 encoded string
+        return Convert.ToBase64String(inputBytes);
+    }
+
+    private string GenerateSignatureParameterOrder(string timestamp, string partnerKey, string partnerRefNo, long totalAmount, string partnerPassword)
+    {
+
+        // Parse the ISO 8601 timestamp
+        DateTime parsedTimestamp = DateTime.ParseExact(timestamp, "yyyy-MM-ddTHH:mm:ss.fffffffZ", null, System.Globalization.DateTimeStyles.AdjustToUniversal);
+
+        // Convert to the desired format
+        string formattedTimestamp = parsedTimestamp.ToString("yyyyMMddHHmmss");
+        // Generate timestamp in yyyyMMddHHmmss format
+
+        // Concatenate the values
+        string data = formattedTimestamp + partnerKey + partnerRefNo + totalAmount + partnerPassword;
+
+        // Compute the SHA256 hash
+        return data;
     }
 
     public bool isTimeStampExceed(string timeStamp)
