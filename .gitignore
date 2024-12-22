@@ -10,3 +10,4 @@ obj/
 *.sln.docstates
 *.log
 *.vs/
+.env
