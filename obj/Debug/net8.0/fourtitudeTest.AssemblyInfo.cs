@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("fourtitudeTest")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9bbaddac93af2621c7c769c5961d29633b147a3d")]
 [assembly: System.Reflection.AssemblyProductAttribute("fourtitudeTest")]
 [assembly: System.Reflection.AssemblyTitleAttribute("fourtitudeTest")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
