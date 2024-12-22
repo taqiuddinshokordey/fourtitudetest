@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -60,13 +61,13 @@ public class CheckRequestValidity
 
     public bool isTimeStampValid(string timeStamp)
     {
-        // Validate timestamp
-        if (!DateTime.TryParse(timeStamp, out DateTime parsedDateTime))
-        {
-            return false;
-        }
-
-        return parsedDateTime.Kind == DateTimeKind.Utc && timeStamp.EndsWith("Z");
+        string format = "yyyy-MM-ddTHH:mm:ss.fffffffZ";
+        return DateTime.TryParseExact(
+            timeStamp, 
+            format, 
+            CultureInfo.InvariantCulture, 
+            DateTimeStyles.AssumeUniversal | DateTimeStyles.AdjustToUniversal, 
+            out _);
     }
 
     public string DecodeBase64(string base64Encoded)

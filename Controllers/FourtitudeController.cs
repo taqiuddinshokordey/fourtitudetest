@@ -144,7 +144,14 @@ public class FourtitudeController : Controller
 
         log.Info("Success Response: " + JsonConvert.SerializeObject(response));
         // Return the consent data in the response
-        return Json(new { message = response });
+        //return Json(new { response });
+        return Ok(new
+        {
+            result = response.result,
+            totalamount = response.TotalAmount,
+            totaldiscount = response.TotalDiscount,
+            finalamount = response.FinalAmount
+        });
         
     }
 
