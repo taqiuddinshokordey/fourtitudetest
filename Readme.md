@@ -26,6 +26,13 @@
     dotnet run
     ```
 
+## Env File
+
+PARTNERS='[
+    {"PartnerNo": "PartnerNo","AllowedPartner": "AllowedPartner","PartnerPassword": "PartnerPassword"},
+    {"PartnerNo": "PartnerNo","AllowedPartner": "AllowedPartner","PartnerPassword": "PartnerPassword"}
+]'
+
 ## How to Deploy in Docker
 
 1. **Install Docker:**
