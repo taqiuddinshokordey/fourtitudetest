@@ -1,0 +1,12 @@
+# Ignore .vscode folder
+.vscode/
+
+# Ignore other common files and folders
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.log
+*.vs/
